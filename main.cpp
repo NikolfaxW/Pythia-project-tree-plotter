@@ -1,15 +1,10 @@
-#include "Pythia8/Pythia.h"
 #include "TCanvas.h"
-#include "TString.h"
 #include "TH2D.h"
-#include "TMath.h"
 #include "TMarker.h"
 #include "TRandom3.h"
 #include "TStyle.h"
 #include "TTree.h"
 #include "TFile.h"
-#include "fastjet/PseudoJet.hh"
-#include "fastjet/ClusterSequence.hh"
 #include "TKey.h"
 #include "TLegend.h"
 
@@ -40,7 +35,7 @@ void DrawHistogramFromTree(const char* filename, const char* treename, const cha
 
 
 
-    canvas->SaveAs("histogram.pdf");
+    canvas->SaveAs("../results/histogram.pdf");
 
 
 
@@ -70,7 +65,7 @@ void PrintTreeNames(const char* filename) {
 
 
 int main() {
-    DrawHistogramFromTree("Jet_tree.root", "T", "pT");
+    DrawHistogramFromTree("../../Pythia-project-tree-creator/results/Jet_tree.root", "T", "pT");
 //    PrintTreeNames("Jet_tree.root");
 
     return 0;
