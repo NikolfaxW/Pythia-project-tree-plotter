@@ -1,3 +1,6 @@
+#include <iostream>
+#include <string>
+
 #include "TCanvas.h"
 #include "TH2D.h"
 #include "TMarker.h"
@@ -8,12 +11,17 @@
 #include "TKey.h"
 #include "TLegend.h"
 
-#include <iostream>
+//! USE LOG SCALE FOR Y AXIS(JUST FOR PT destribution)
 
 
 
-void DrawHistogramFromTree(const char* filename, const char* treename, const char* variable, const char* selection = "") {
-    TFile *file = TFile::Open(filename);
+void DrawHistogramFromTree(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection = "") {
+    std::string fullpath = path + filename + ".root", save_path = "../results/";
+    save_path.append(variable);
+    save_path.append(", ");
+    save_path.append(filename);
+    save_path.append(".pdf");
+    TFile *file = TFile::Open( fullpath.c_str());
     if (!file || file->IsZombie()) {
         std::cerr << "Error: Unable to open file " << filename << std::endl;
         return;
@@ -25,17 +33,26 @@ void DrawHistogramFromTree(const char* filename, const char* treename, const cha
         return;
     }
 
-    TH1F *histogram = new TH1F("histogram", "Histogram of pT", 100, tree->GetMinimum(variable), tree->GetMaximum(variable));
+    Float_t left_border = tree->GetMinimum(variable);
+    Float_t right_border = tree->GetMaximum(variable);
 
+    TH1F *histogram = new TH1F("histogram", variable, 100, left_border , right_border);
+    // create histogram with filname as title, nbinsx bins, min and max values of variable - can be changed
     tree->Project("histogram", variable, selection);
-    TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 hight 600 pixels
+    // 4250 x 3300 pixels for full page histograms?
+    // 2075 x 1650 pixels for half page histograms?
+    // 1037 x 825 pixels for quarter page histograms?
+    // 800 x 600 is basic size
+
+    TCanvas *canvas = new TCanvas("canvas", "Canvas", 4250, 3300); //width = 800 height 600 pixels
     histogram->Draw();
-    histogram->GetXaxis()->SetTitle("pT [MeV]");
-    histogram->GetYaxis()->SetTitle("N");
 
 
 
-    canvas->SaveAs("../results/histogram.pdf");
+    histogram->GetXaxis()->SetTitle("pT [GeV/c]");
+    histogram->GetYaxis()->SetTitle("N, number of jets");
+
+    canvas->SaveAs(save_path.c_str());
 
 
 
@@ -65,8 +82,9 @@ void PrintTreeNames(const char* filename) {
 
 
 int main() {
-    DrawHistogramFromTree("../../Pythia-project-tree-creator/results/Jet_tree.root", "T", "pT");
-//    PrintTreeNames("Jet_tree.root");
+    std::string path = "../../Pythia-project-tree-creator/results/";
+    std::string filename = "jet tree, cut [D_0 n =10000, 1+ GeV]";
+    DrawHistogramFromTree(path, filename, "T", "z_val", 0);
 
     return 0;
 }
