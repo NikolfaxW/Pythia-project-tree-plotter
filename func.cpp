@@ -48,7 +48,7 @@ DrawHistogramFromTreeD01(const std::string path, const std::string filename, con
     Float_t right_border = tree->GetMaximum(variable);
 
 
-    TH1F *histogram = new TH1F("histogram", "P_{T,D^{0}} >= 1 GeV/c", 100, left_border, right_border);
+    TH1F *histogram = new TH1F("histogram", "p_{T,D^{0}} >= 1 GeV/c", 100, left_border, right_border);
     // create histogram with filname as title, nbinsx bins, min and max values of variable - can be changed
     tree->Project("histogram", variable, selection);
 
@@ -82,7 +82,7 @@ DrawHistogramFromTreeD01(const std::string path, const std::string filename, con
     legend->Draw();
 
 
-    histogram->GetXaxis()->SetTitle("P_{T} [GeV/c]");
+    histogram->GetXaxis()->SetTitle("p_{T} [GeV/c]");
     histogram->GetYaxis()->SetTitle("N, number of jets");
 
     std::string temp = save_path + ".pdf";
@@ -124,7 +124,7 @@ DrawHistogramFromTreeD05(const std::string path, const std::string filename, con
     Float_t right_border = tree->GetMaximum(variable);
 
 
-    TH1F *histogram = new TH1F("histogram", "P_{T,D^{0}} >= 5 GeV/c", 100, left_border, right_border);
+    TH1F *histogram = new TH1F("histogram", "p_{T,D^{0}} >= 5 GeV/c", 100, left_border, right_border);
     // create histogram with filname as title, nbinsx bins, min and max values of variable - can be changed
     tree->Project("histogram", variable, selection);
 
@@ -158,7 +158,7 @@ DrawHistogramFromTreeD05(const std::string path, const std::string filename, con
     legend->Draw();
 
 
-    histogram->GetXaxis()->SetTitle("P_{T} [GeV/c]");
+    histogram->GetXaxis()->SetTitle("p_{T} [GeV/c]");
     histogram->GetYaxis()->SetTitle("N, number of jets");
 
     std::string temp = save_path + ".pdf";
@@ -200,7 +200,7 @@ DrawHistogramFromTreeD0(const std::string path, const std::string filename, cons
     Float_t right_border = tree->GetMaximum(variable);
 
 
-    TH1F *histogram = new TH1F("histogram", "P_{T,D^{0}}", 100, left_border, right_border);
+    TH1F *histogram = new TH1F("histogram", "p_{T,D^{0}}", 100, left_border, right_border);
     // create histogram with filname as title, nbinsx bins, min and max values of variable - can be changed
     tree->Project("histogram", variable, selection);
 
