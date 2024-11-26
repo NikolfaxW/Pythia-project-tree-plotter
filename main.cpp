@@ -11,41 +11,14 @@
 #include "TFile.h"
 #include "TKey.h"
 #include "TLegend.h"
-
-//! USE LOG SCALE FOR Y AXIS(JUST FOR PT destribution)
-
-
 #include <TCanvas.h>
 #include <TH1F.h>
 #include <TLegend.h>
 #include <TFile.h>
 
-void superscript_example() {
-    // Create a histogram
-    TH1F *hist = new TH1F("hist", "Histogram with Superscript", 100, 0, 10);
+#include "func.h"
 
-    // Fill the histogram with random data
-    for (int i = 0; i < 10000; ++i) {
-        hist->Fill(gRandom->Gaus(5, 1));
-    }
 
-    // Create a canvas
-    TCanvas *canvas = new TCanvas("canvas", "Canvas with Superscript", 800, 600);
-
-    // Set the axis labels with superscripts
-    hist->GetXaxis()->SetTitle("X axis label (units)^{2}");
-    hist->GetYaxis()->SetTitle("Y axis label (units)^{2}");
-
-    // Draw the histogram
-    hist->Draw();
-
-    // Save the canvas to a file
-    canvas->SaveAs("histogram_with_superscript.png");
-
-    // Clean up
-    delete hist;
-    delete canvas;
-}
 
 void DrawHistogramFromTree(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection = "", const bool doRootSave = false) {
     std::string fullpath = path + filename + ".root", save_path = "../results/";
@@ -72,7 +45,7 @@ void DrawHistogramFromTree(const std::string path, const std::string filename, c
 
 
 
-    TH1F *histogram = new TH1F("histogram", variable, 100, left_border , right_border);
+    TH1F *histogram = new TH1F("histogram", "P_{T,D^{0}}", 100, left_border , right_border);
     // create histogram with filname as title, nbinsx bins, min and max values of variable - can be changed
     tree->Project("histogram", variable, selection);
 
@@ -84,18 +57,21 @@ void DrawHistogramFromTree(const std::string path, const std::string filename, c
     TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
 
 //    canvas->SetLogx(); //set x axis to log scales
-
+    canvas->SetLogy();
 
 
     histogram->Draw();
 
 
-    TLegend *legend = new TLegend(0.7, 0.7, 0.9, 0.9); // Position: x1, y1, x2, y2
-    legend->SetHeader("Legend Title", "C");            // Optional title (centered)
-    legend->AddEntry(histogram, "Dataset 1", "l");         // "l" means line
-
+    TLegend *legend = new TLegend(0.7, 0.7, 0.85, 0.85); // Position: x1, y1, x2, y2
+//    legend->SetHeader("Legend Title", "C");            // Optional title (centered)
+    legend->SetEntrySeparation(1);
+//    legend->SetMargin(1);
+    legend->AddEntry(histogram, "#sqrt{S_{NN}} = 200 GeV", "");
+    legend->AddEntry(histogram, "Pythia8", "l");         // "l" means line
+    legend->AddEntry(histogram, "10^{6} events","");
     // Customize legend appearance (optional)
-    legend->SetBorderSize(1);    // Border thickness (0 for no border)
+    legend->SetBorderSize(0);    // Border thickness (0 for no border)
     legend->SetTextSize(0.03);   // Text size
     legend->SetFillColor(kWhite); // Background color (kWhite = transparent)
 
@@ -103,7 +79,7 @@ void DrawHistogramFromTree(const std::string path, const std::string filename, c
     legend->Draw();
 
 
-    histogram->GetXaxis()->SetTitle("pT [GeV/c]");
+    histogram->GetXaxis()->SetTitle("P_{T} [GeV/c]");
     histogram->GetYaxis()->SetTitle("N, number of jets");
 
     std::string temp = save_path + ".pdf";
@@ -141,11 +117,130 @@ void PrintTreeNames(const char* filename) {
 
 
 int main() {
-//    std::string path = "../source/";
-//    std::string filename = "jet tree, cut [D_0 n =1000000, 1+ GeV]";
-//    PrintTreeNames((path + filename + ".root").c_str());
-//    DrawHistogramFromTree(path, filename, "T", "D_0_pT", "", true);
-    superscript_example();
-    
+    std::string path = "../source/";
+    std::string filename = "jet tree, cut [D_0 n =1000000, 1+ GeV]";
+    DrawHistogramFromTreeD0(path, filename, "T", "D_0_pT", "", true);
+    DrawHistogramFromTreeD01(path, filename, "T", "D_0_pT", "D_0_pT>=1", true);
+    DrawHistogramFromTreeD05(path, filename, "T", "D_0_pT", "D_0_pT>=5", true);
+    {
+        DrawHistogramFromTreeL(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", std::string(), "", true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", std::string(), "", true);
+        DrawHistogramFromTreeL(path, filename, "T", "z_val", 0, 1, "z_{val}", std::string(), "", true);
+        DrawHistogramFromTreezLog(path, filename, "T", "z_val", 0, 1, "z_{val}", "",
+                                  "", true);
+
+    }
+
+    std::string selectionAng2 = "D_0_pT>=1";
+    std::string addName2 = ", D^{0}_{P_{T}}#geq 1";
+    {
+        DrawHistogramFromTreeL(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}" , addName2,
+                                  selectionAng2.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "z_val", 0, 1, "z_{val}" , addName2,
+                               selectionAng2.c_str(), true);
+        DrawHistogramFromTreezLog(path, filename, "T", "z_val", 0, 1, "z_{val}", addName2,
+                                  selectionAng2.c_str(), true);
+
+    }
+    std::string selectionAng3 = "D_0_pT>=1 && jet_pT >=5";
+    std::string addName3 = ", D^{0}_{P_{T}}#geq 1 and P_{T,jet}#geq 5";
+    {
+        DrawHistogramFromTreeL(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", addName3,
+                                  selectionAng3.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "z_val", 0, 1, "z_{val}", addName3,
+                               selectionAng3.c_str(), true);
+        DrawHistogramFromTreezLog(path, filename, "T", "z_val", 0, 1, "z_{val}", addName3,
+                                  selectionAng3.c_str(), true);
+
+    }
+
+    std::string selectionAng4 = "D_0_pT>=5";
+    std::string addName4 = ", D^{0}_{P_{T}}#geq 5";
+    {
+        DrawHistogramFromTreeL(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l11", 0, 1, "#lambda^{1}_{1}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l105", 0, 1, "#lambda^{1}_{0.5}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l115", 0, 1, "#lambda^{1}_{1.5}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l12", 0, 1, "#lambda^{1}_{2}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l13", 0, 1, "#lambda^{1}_{3}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreeLLog(path, filename, "T", "l20", 0, 1, "#lambda^{2}_{0}", addName4,
+                                  selectionAng4.c_str(), true);
+        DrawHistogramFromTreeL(path, filename, "T", "z_val", 0, 1, "z_{val}", addName4,
+                               selectionAng4.c_str(), true);
+        DrawHistogramFromTreezLog(path, filename, "T", "z_val", 0, 1, "z_{val}", addName4,
+                                  selectionAng4.c_str(), true);
+
+    }
+
     return 0;
 }
