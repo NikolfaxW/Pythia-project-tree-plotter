@@ -25,19 +25,19 @@
 
 //! USE LOG SCALE FOR Y AXIS(JUST FOR PT destribution)
 
-void DrawHistogramFromTreeD01(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection, const bool doRootSave);
-void DrawHistogramFromTreeD05(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection, const bool doRootSave);
-void DrawHistogramFromTreeD0(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection, const bool doRootSave);
-void
-DrawHistogramFromTreeL(const std::string path, const std::string filename, const char *treename, const char *variable,
-                       Float_t left_border, Float_t right_border, std::string name, std::string addName,
-                       const char *selection, const bool doRootSave);
-void DrawHistogramFromTreeLLog(const std::string path, const std::string filename, const char *treename,
-                               const char *variable, Float_t left_border, Float_t right_border, std::string name,
-                               std::string addName, const char *selection, const bool doRootSave);
-void DrawHistogramFromTreez(const std::string path, const std::string filename, const char *treename, const char *variable, Float_t left_border, Float_t right_border, std::string name,
-                            const char *selection, const bool doRootSave);
-void DrawHistogramFromTreezLog(const std::string path, const std::string filename, const char *treename,
-                               const char *variable, Float_t left_border, Float_t right_border, std::string name,
-                               std::string addName, const char *selection, const bool doRootSave);
+void PrintTreeNames(const char* filename);
+void DrawHistogramFromTree(const std::string path, const std::string filename, const char *treename, const char *variable, const char *selection, const bool doRootSave);
+void DrawHistogramFromTreeD0PT(std::string path, std::string outName, std::string treename);
+void DrawHistogramFromTreeTest(std::string path_to_tree, std::string output_file_name, std::string tree_name,
+                               std::string *variable_array, std::string *selection_array, std::string *variable_names,
+                               int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, Float_t left_border,
+                               Float_t right_border, std::string title, std::string x_axis_name,
+                               std::string y_axis_name);
+void DrawHistogramFromTreeTestSetLeg(std::string path_to_tree, std::string output_file_name, std::string tree_name,
+                                     std::string *variable_array, std::string *selection_array,
+                                     std::string *variable_names, int size, bool doRootSave, bool do_setLogY,
+                                     bool do_integral_norm, Float_t left_border, Float_t right_border,
+                                     std::string title, std::string x_axis_name, std::string y_axis_name, double x1,
+                                     double y1, double x2, double y2);
+
 #endif //PYTHIA_PROJECT_TREE_PLOTTER_FUNC_H
