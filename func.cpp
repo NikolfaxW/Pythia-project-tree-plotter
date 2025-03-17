@@ -20,6 +20,7 @@
 #include <TH1F.h>
 #include <TLegend.h>
 #include <TFile.h>
+#include <vector>
 
 void PrintTreeNames(const char* filename) {
     TFile *file = TFile::Open(filename);
@@ -114,6 +115,9 @@ DrawHistogramFromTree(const std::string path, const std::string filename, const 
     delete histogram;
     delete canvas;
     file->Close();
+
+    delete file;
+    delete tree;
 }
 
 void DrawHistogramFromTreeTest(std::string path_to_tree, std::string output_file_name, std::string tree_name,
@@ -192,6 +196,7 @@ void DrawHistogramFromTreeTest(std::string path_to_tree, std::string output_file
     delete [] histogram;
     delete canvas;
     file->Close();
+
 }
 
 void DrawHistogramFromTreeTestSetLeg(std::string path_to_tree, std::string output_file_name, std::string tree_name,
@@ -365,4 +370,38 @@ void DrawHistogramFromTreeD0PT(std::string path, std::string outName, std::strin
     delete histogram1;
     delete canvas;
     file->Close();
+}
+
+bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
+                             std::string variable_name){
+    TFile *file = TFile::Open(path_to_tree.c_str());
+    if (!file || file->IsZombie()) {
+        std::cerr << "Error: Unable to open file " << path_to_tree << std::endl;
+        delete file;
+        return false;
+    }
+    TTree *tree = (TTree *) file->Get(tree_name.c_str());
+    if (!tree) {
+        std::cerr << "Error: Unable to retrieve tree " << tree_name << " from file" << std::endl;
+        file->Close();
+        return false;
+    }
+    std::vector<Int_t> values;
+
+    Int_t value;
+    tree->SetBranchAddress(variable_name.c_str(), &value);  // Replace with your branch name
+    long long int nEntries = tree->GetEntries();
+    for (long long int i = 0; i < nEntries; i++) {
+        tree->GetEntry(i);
+        auto temp = std::find(values.begin(), values.end(),value);
+        if(temp != values.end()){
+            std::cerr << "Error: Found repetition of value " << value << " in leaf " << variable_name << std::endl;
+            file->Close();
+            return false;
+        }
+        values.push_back(value);
+    }
+    file->Close();
+    return true;
+
 }

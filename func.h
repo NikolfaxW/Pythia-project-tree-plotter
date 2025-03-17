@@ -39,5 +39,7 @@ void DrawHistogramFromTreeTestSetLeg(std::string path_to_tree, std::string outpu
                                      bool do_integral_norm, Float_t left_border, Float_t right_border,
                                      std::string title, std::string x_axis_name, std::string y_axis_name, double x1,
                                      double y1, double x2, double y2);
+bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
+                             std::string variable_name);
 
 #endif //PYTHIA_PROJECT_TREE_PLOTTER_FUNC_H
