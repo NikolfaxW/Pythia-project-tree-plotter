@@ -325,13 +325,13 @@ int main() {
         variable_names_angs[1] = "#lambda^{1}_{1}, p_{T,lead} > 1 GeV";
         variable_names_angs[2] = "#lambda^{1}_{1}, p_{T,lead} > 1 GeV, p_{T,jet} > 5 GeV";
         variable_names_angs[3] = "#lambda^{1}_{1}, p_{T,lead} > 5 GeV, p_{T,jet} > 5 GeV";
-        DrawHistogramFromTreeSetLeg("../../Pythia-project-tree-creator-inclusive-jets-/results/jets.root", "../results/leadl11", "angT",
+        DrawHistogramFromTreeSetLeg("../../Pythia-project-tree-creator-inclusive-jets-/results/jets.root", "../results/jetsl11", "angT",
                                         variable_array_angs, selection_array_angs, variable_names_angs, 4, false, true,
                                         false, false, 0,
                                         1,
                                         "#lambda^{1}_{1}", "#lambda^{1}_{1}",
                                         "Number of entries", 0.54, 0.57, 0.84, 0.87);
-        if(doIntegralNorm)DrawHistogramFromTreeSetLeg("../../Pythia-project-tree-creator-inclusive-jets-/results/jets.root", "../results/leadl11(integral norm)", "angT",
+        if(doIntegralNorm)DrawHistogramFromTreeSetLeg("../../Pythia-project-tree-creator-inclusive-jets-/results/jets.root", "../results/jetsl11(integral norm)", "angT",
                                         variable_array_angs, selection_array_angs, variable_names_angs, 4, false, true,
                                         true, false, 0,
                                         1,
@@ -513,7 +513,7 @@ int main() {
         variable_array[0] = "tcsf";
         variable_names[0] = "Total crossection fraction";
         DrawHistogramFromTree("../../Pythia-project-tree-creator-inclusive-jets-/results/jets.root",
-                                  "../results/total crossection fraction", "angT",
+                                  "../results/jets total crossection fraction", "angT",
                                   variable_array, selection_array, variable_names,
                                   1, false, true, false, false, 0,
                                   30, "Total event crossections devided by the event mass", "crossection",
