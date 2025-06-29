@@ -22,7 +22,7 @@
 #include <TFile.h>
 #include <vector>
 
-void PrintTreeNames(const char* filename) {
+void PrintTreeNames(const char *filename) {
     TFile *file = TFile::Open(filename);
     if (!file || file->IsZombie()) {
         std::cerr << "Error: Unable to open file " << filename << std::endl;
@@ -31,7 +31,7 @@ void PrintTreeNames(const char* filename) {
 
     TIter next(file->GetListOfKeys());
     TKey *key;
-    while ((key = (TKey*)next())) {
+    while ((key = (TKey *) next())) {
         TObject *obj = key->ReadObj();
         if (obj->IsA()->InheritsFrom("TTree")) {
             std::cout << "Found tree: " << obj->GetName() << std::endl;
@@ -137,7 +137,7 @@ void DrawHistogramFromTreeD0PT(std::string path, std::string outName, std::strin
 }
 
 bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
-                             std::string variable_name){
+                             std::string variable_name) {
     TFile *file = TFile::Open(path_to_tree.c_str());
     if (!file || file->IsZombie()) {
         std::cerr << "Error: Unable to open file " << path_to_tree << std::endl;
@@ -157,8 +157,8 @@ bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
     long long int nEntries = tree->GetEntries();
     for (long long int i = 0; i < nEntries; i++) {
         tree->GetEntry(i);
-        auto temp = std::find(values.begin(), values.end(),value);
-        if(temp != values.end()){
+        auto temp = std::find(values.begin(), values.end(), value);
+        if (temp != values.end()) {
             std::cerr << "Error: Found repetition of value " << value << " in leaf " << variable_name << std::endl;
             file->Close();
             return false;
@@ -171,7 +171,8 @@ bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
 
 void DrawHistogramFromTree(std::string path_to_tree, std::string output_file_name, std::string tree_name,
                            std::string *variable_array, std::string *selection_array, std::string *variable_names,
-                           int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0, Double_t left_border,
+                           int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0,
+                           Double_t left_border,
                            Double_t right_border, std::string title, std::string x_axis_name,
                            std::string y_axis_name) {
     TFile *file = TFile::Open(path_to_tree.c_str());
@@ -187,29 +188,29 @@ void DrawHistogramFromTree(std::string path_to_tree, std::string output_file_nam
     }
     TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
 
-    TH1F **histogram = new TH1F*[size];
+    TH1F **histogram = new TH1F *[size];
     std::string temp;
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         temp = "histogram" + std::to_string(i + 1);
         histogram[i] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
     }
     histogram[0]->SetStats(0);
-    for(int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         tree->Project(histogram[i]->GetName(), variable_array[i].c_str(), selection_array[i].c_str());
-    if(do_setLogY){
+    if (do_setLogY) {
         canvas->SetLogy();
     }
 
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         histogram[i]->SetLineColor(i + 1);
     }
-    if(do_integral_norm){
-        for(int i = 0; i < size; ++i){
+    if (do_integral_norm) {
+        for (int i = 0; i < size; ++i) {
             histogram[i]->Scale(1.0 / histogram[i]->Integral());
         }
     }
 
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         histogram[i]->GetXaxis()->SetTitle(x_axis_name.c_str());
         histogram[i]->GetYaxis()->SetTitle(y_axis_name.c_str());
         histogram[i]->Draw("same");
@@ -218,9 +219,9 @@ void DrawHistogramFromTree(std::string path_to_tree, std::string output_file_nam
     legend->SetEntrySeparation(1);
     legend->AddEntry(histogram[0], "#sqrt{S_{NN}} = 200 GeV", "");
     legend->AddEntry(histogram[0], "Pythia8", "");         // "l" means line
-    if(d0) legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} found", "");
+    if (d0) legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} found", "");
     else legend->AddEntry(histogram[0], "1.2*10^{6}jets found", "");
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         legend->AddEntry(histogram[i], variable_names[i].c_str(), "l");
     }
 
@@ -232,7 +233,7 @@ void DrawHistogramFromTree(std::string path_to_tree, std::string output_file_nam
 
     legend->Draw();
 
-    if(doRootSave){
+    if (doRootSave) {
         temp = output_file_name + ".root";
         canvas->SaveAs(temp.c_str());
     }
@@ -240,10 +241,10 @@ void DrawHistogramFromTree(std::string path_to_tree, std::string output_file_nam
     canvas->SaveAs(temp.c_str());
 
 
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         delete histogram[i];
     }
-    delete [] histogram;
+    delete[] histogram;
     delete canvas;
     file->Close();
 
@@ -268,27 +269,27 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
     }
     TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
 
-    TH1F **histogram = new TH1F*[size];
+    TH1F **histogram = new TH1F *[size];
     std::string temp;
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         temp = "histogram" + std::to_string(i + 1);
         histogram[i] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
     }
     histogram[0]->SetStats(0);
-    for(int i = 0; i < size; ++i)
+    for (int i = 0; i < size; ++i)
         tree->Project(histogram[i]->GetName(), variable_array[i].c_str(), selection_array[i].c_str());
-    if(do_setLogY){
+    if (do_setLogY) {
         canvas->SetLogy();
     }
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         histogram[i]->SetLineColor(i + 1);
     }
-    if(do_integral_norm){
-        for(int i = 0; i < size; ++i){
+    if (do_integral_norm) {
+        for (int i = 0; i < size; ++i) {
             histogram[i]->Scale(1.0 / histogram[i]->Integral());
         }
     }
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         histogram[i]->GetXaxis()->SetTitle(x_axis_name.c_str());
         histogram[i]->GetYaxis()->SetTitle(y_axis_name.c_str());
         histogram[i]->Draw("same");
@@ -297,9 +298,9 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
     legend->SetEntrySeparation(1);
     legend->AddEntry(histogram[0], "#sqrt{S_{NN}} = 200 GeV", "");
     legend->AddEntry(histogram[0], "Pythia8", "");         // "l" means line
-    if(d0) legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} found", "");
+    if (d0) legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} found", "");
     else legend->AddEntry(histogram[0], "1.2*10^{6}jets found", "");
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         legend->AddEntry(histogram[i], variable_names[i].c_str(), "l");
     }
 
@@ -311,7 +312,7 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
 
     legend->Draw();
 
-    if(doRootSave){
+    if (doRootSave) {
         temp = output_file_name + ".root";
         canvas->SaveAs(temp.c_str());
     }
@@ -319,19 +320,22 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
     canvas->SaveAs(temp.c_str());
 
 
-    for(int i = 0; i < size; ++i){
+    for (int i = 0; i < size; ++i) {
         delete histogram[i];
     }
-    delete [] histogram;
+    delete[] histogram;
     delete canvas;
     file->Close();
 }
 
-void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::string path_to_tree_second, std::string output_file_name, std::string tree_name1,std::string tree_name2,
-                           std::string *variable_array, std::string *selection_array, std::string *variable_names,
-                           int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0, Double_t left_border,
-                           Double_t right_border, std::string title, std::string x_axis_name,
-                           std::string y_axis_name) {
+void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::string path_to_tree_second,
+                                          std::string output_file_name, std::string tree_name1, std::string tree_name2,
+                                          std::string *variable_array, std::string *selection_array,
+                                          std::string *variable_names,
+                                          int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0,
+                                          Double_t left_border,
+                                          Double_t right_border, std::string title, std::string x_axis_name,
+                                          std::string y_axis_name) {
     TFile *file1 = TFile::Open(path_to_tree_first.c_str());
     TFile *file2 = TFile::Open(path_to_tree_second.c_str());
     if (!file1 || file1->IsZombie()) {
@@ -358,9 +362,8 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
     }
 
 
-
     TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
-    TH1F **histogram = new TH1F*[2];
+    TH1F **histogram = new TH1F *[2];
     std::string temp;
     temp = "histogram00";
     histogram[0] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
@@ -370,14 +373,14 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
     tree1->Project(histogram[0]->GetName(), variable_array[0].c_str(), selection_array[0].c_str());
     tree2->Project(histogram[1]->GetName(), variable_array[1].c_str(), selection_array[1].c_str());
 
-    if(do_setLogY){
+    if (do_setLogY) {
         canvas->SetLogy();
     }
     histogram[0]->SetLineColor(0);
     histogram[1]->SetLineColor(1);
 
 
-    if(do_integral_norm){
+    if (do_integral_norm) {
         histogram[0]->Scale(1.0 / histogram[0]->Integral());
         histogram[1]->Scale(1.0 / histogram[1]->Integral());
     }
@@ -408,7 +411,7 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
 
     legend->Draw();
 
-    if(doRootSave){
+    if (doRootSave) {
         temp = output_file_name + ".root";
         canvas->SaveAs(temp.c_str());
     }
@@ -418,15 +421,19 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
 
     delete histogram[0];
     delete histogram[1];
-    delete [] histogram;
+    delete[] histogram;
     delete canvas;
     file1->Close();
     file2->Close();
 }
 
-void DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string path_to_tree_jets, std::string title, Double_t left_border, Double_t right_border) {
+void
+DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string path_to_tree_jets, std::string title,
+                                      Double_t left_border, Double_t right_border, std::string variable,
+                                      std::string output_file_name, bool doRootSave, bool do_setLogY,
+                                      bool do_integral_norm, std::string x_axis_name, std::string y_axis_name) {
     TFile *file_d0 = TFile::Open(path_to_tree_d0.c_str()),
-          *file_jets = TFile::Open(path_to_tree_jets.c_str());
+            *file_jets = TFile::Open(path_to_tree_jets.c_str());
     if (!file_d0 || file_d0->IsZombie()) {
         std::cerr << "Error: Unable to open file " << path_to_tree_d0 << std::endl;
         return;
@@ -437,14 +444,14 @@ void DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::str
     }
 
     TTree *tree_d0 = (TTree *) file_d0->Get("angT"),
-          *tree_jets = (TTree *) file_jets->Get("angT");
+            *tree_jets = (TTree *) file_jets->Get("angT");
     if (!tree_d0) {
-        std::cerr << "Error: Unable to retrieve tree " <<  "d0 tree"  << " from file" << std::endl;
+        std::cerr << "Error: Unable to retrieve tree " << "d0 tree" << " from file" << std::endl;
         file_d0->Close();
         return;
     }
     if (!tree_jets) {
-        std::cerr << "Error: Unable to retrieve tree " <<  "jets tree"  << " from file" << std::endl;
+        std::cerr << "Error: Unable to retrieve tree " << "jets tree" << " from file" << std::endl;
         file_jets->Close();
         return;
     }
@@ -455,8 +462,60 @@ void DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::str
     temp = "histogram_jets";
     TH1F histogram_jets(temp.c_str(), title.c_str(), 102, left_border, right_border);
 
+    histogram_d0.SetStats(0);
+    histogram_jets.SetStats(0);
 
+    tree_d0->Project(histogram_d0.GetName(), variable.c_str(), "");
+    tree_jets->Project(histogram_jets.GetName(), variable.c_str(), "");
 
+    if (do_setLogY) {
+        canvas->SetLogy();
+    }
+
+    histogram_d0.SetLineColor(kBlue);
+    histogram_jets.SetLineColor(kRed);
+
+    if (do_integral_norm) {
+        histogram_d0.Scale(1.0 / histogram_d0.Integral());
+        histogram_jets.Scale(1.0 / histogram_jets.Integral());
+
+    }
+
+    histogram_d0.GetXaxis()->SetTitle(x_axis_name.c_str());
+    histogram_d0.GetYaxis()->SetTitle(y_axis_name.c_str());
+    histogram_d0.Draw("same");
+
+    histogram_jets.GetXaxis()->SetTitle(x_axis_name.c_str());
+    histogram_jets.GetYaxis()->SetTitle(y_axis_name.c_str());
+    histogram_jets.Draw("same");
+
+    TLegend *legend = new TLegend(0.7, 0.6, 0.85, 0.85); // Position: x1, y1, x2, y2
+    legend->SetEntrySeparation(1);
+    legend->AddEntry(&histogram_d0, "#sqrt{S_{NN}} = 200 GeV", "");
+    legend->AddEntry(&histogram_d0, "Pythia8", "");         // "l" means line
+    legend->AddEntry(&histogram_d0, "1.2*10^{6}D^{0} found", "");
+    legend->AddEntry(&histogram_d0, "1.2*10^{6}jets found", "");
+    temp = x_axis_name + " D^{0}";
+    legend->AddEntry(&histogram_d0, temp.c_str(), "l");
+    temp = x_axis_name + " jets";
+    legend->AddEntry(&histogram_jets, temp.c_str(), "l");
+
+    legend->SetTextSize(0.03);
+    legend->SetFillStyle(0);
+    legend->SetFillColor(0);
+    legend->SetLineColor(0);
+    legend->SetBorderSize(0);
+
+    legend->Draw();
+
+    if (doRootSave) {
+        temp = output_file_name + ".root";
+        canvas->SaveAs(temp.c_str());
+    }
+    temp = output_file_name + ".pdf";
+    canvas->SaveAs(temp.c_str());
+
+    delete canvas;
     file_d0->Close();
     file_jets->Close();
     delete file_d0;

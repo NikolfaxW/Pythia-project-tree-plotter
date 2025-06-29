@@ -47,5 +47,11 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
                                           int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0, Double_t left_border,
                                           Double_t right_border, std::string title, std::string x_axis_name,
                                           std::string y_axis_name);
+void
+DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string path_to_tree_jets, std::string title,
+                                      Double_t left_border, Double_t right_border, std::string variable,
+                                      std::string output_file_name, bool doRootSave, bool do_setLogY,
+                                      bool do_integral_norm, std::string x_axis_name, std::string y_axis_name);
+
 
 #endif //PYTHIA_PROJECT_TREE_PLOTTER_FUNC_H

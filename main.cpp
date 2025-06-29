@@ -45,17 +45,37 @@ int main() {
 //                                    1,
 //                                    "#lambda^{1}_{1}", "#lambda^{1}_{1}",
 //                                    "Number of entries", 0.54, 0.57, 0.84, 0.87);
-        DrawHistogramFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "../results/l11(no cuts)", "angT", "angT",
-                                                  variable_array_angs, selection_array_angs, variable_names_angs,
-                                                  2, false, true, false, true, 0,
-                                                  1, "#lambda^{1}_{1}", "#lambda^{1}_{1}",
-                                                  "Number of entries");
-        if (doIntegralNorm)
-            DrawHistogramFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "../results/l11(no cuts)", "angT", "angT",
-                                                 variable_array_angs, selection_array_angs, variable_names_angs,
-                                                 2, false, true, true, true, 0,
-                                                 1, "#lambda^{1}_{1}", "#lambda^{1}_{1}",
-                                                 "Number of entries");
+//        DrawHistogramFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "../results/l11(no cuts)", "angT", "angT",
+//                                                  variable_array_angs, selection_array_angs, variable_names_angs,
+//                                                  2, false, true, false, true, 0,
+//                                                  1, "#lambda^{1}_{1}", "#lambda^{1}_{1}",
+//                                                  "Number of entries");
+
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{1}",
+                                              0, 1, "l11",
+                                              "../results/l11(no cuts)", false, true,
+                                              true, "#lambda^{1}_{1}", "Number of entries");
+
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{0.5}",
+                                              0, 1, "l105",
+                                              "../results/l105(no cuts)", false, true,
+                                              true, "#lambda^{1}_{0.5}", "Number of entries");
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{1.5}",
+                                              0, 1, "l115",
+                                              "../results/l115(no cuts)", false, true,
+                                              true, "#lambda^{1}_{1.5}", "Number of entries");
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{2}",
+                                              0, 1.6, "l12",
+                                              "../results/l12(no cuts)", false, true,
+                                              true, "#lambda^{1}_{2}", "Number of entries");
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{3}",
+                                              0, 6, "l13",
+                                              "../results/l13(no cuts)", false, true,
+                                              true, "#lambda^{1}_{3}", "Number of entries");
+        DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{2}_{0}",
+                                              0, 1, "l20",
+                                              "../results/l20(no cuts)", false, true,
+                                              true, "#lambda^{2}_{0}", "Number of entries");
     }
     else {
         if (doDrawD0 && repetitions) {
