@@ -423,3 +423,43 @@ void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::s
     file1->Close();
     file2->Close();
 }
+
+void DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string path_to_tree_jets, std::string title, Double_t left_border, Double_t right_border) {
+    TFile *file_d0 = TFile::Open(path_to_tree_d0.c_str()),
+          *file_jets = TFile::Open(path_to_tree_jets.c_str());
+    if (!file_d0 || file_d0->IsZombie()) {
+        std::cerr << "Error: Unable to open file " << path_to_tree_d0 << std::endl;
+        return;
+    }
+    if (!file_jets || file_jets->IsZombie()) {
+        std::cerr << "Error: Unable to open file " << path_to_tree_jets << std::endl;
+        return;
+    }
+
+    TTree *tree_d0 = (TTree *) file_d0->Get("angT"),
+          *tree_jets = (TTree *) file_jets->Get("angT");
+    if (!tree_d0) {
+        std::cerr << "Error: Unable to retrieve tree " <<  "d0 tree"  << " from file" << std::endl;
+        file_d0->Close();
+        return;
+    }
+    if (!tree_jets) {
+        std::cerr << "Error: Unable to retrieve tree " <<  "jets tree"  << " from file" << std::endl;
+        file_jets->Close();
+        return;
+    }
+
+    TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
+    std::string temp = "histogram_d0";
+    TH1F histogram_d0(temp.c_str(), title.c_str(), 102, left_border, right_border);
+    temp = "histogram_jets";
+    TH1F histogram_jets(temp.c_str(), title.c_str(), 102, left_border, right_border);
+
+
+
+    file_d0->Close();
+    file_jets->Close();
+    delete file_d0;
+    delete file_jets;
+}
+
