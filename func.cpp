@@ -326,3 +326,100 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
     delete canvas;
     file->Close();
 }
+
+void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::string path_to_tree_second, std::string output_file_name, std::string tree_name1,std::string tree_name2,
+                           std::string *variable_array, std::string *selection_array, std::string *variable_names,
+                           int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0, Double_t left_border,
+                           Double_t right_border, std::string title, std::string x_axis_name,
+                           std::string y_axis_name) {
+    TFile *file1 = TFile::Open(path_to_tree_first.c_str());
+    TFile *file2 = TFile::Open(path_to_tree_second.c_str());
+    if (!file1 || file1->IsZombie()) {
+        std::cerr << "Error: Unable to open file1 " << path_to_tree_first << std::endl;
+        return;
+    }
+    if (!file2 || file2->IsZombie()) {
+        std::cerr << "Error: Unable to open file2 " << path_to_tree_second << std::endl;
+        return;
+    }
+    TTree *tree1 = (TTree *) file1->Get(tree_name1.c_str());
+    TTree *tree2 = (TTree *) file2->Get(tree_name2.c_str());
+
+    if (!tree1) {
+        std::cerr << "Error: Unable to retrieve tree1 " << tree_name1 << " from file1" << std::endl;
+        file1->Close();
+        return;
+    }
+
+    if (!tree2) {
+        std::cerr << "Error: Unable to retrieve tree2 " << tree_name2 << " from file2" << std::endl;
+        file1->Close();
+        return;
+    }
+
+
+
+    TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
+    TH1F **histogram = new TH1F*[2];
+    std::string temp;
+    temp = "histogram00";
+    histogram[0] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
+    temp = "histogram11";
+    histogram[1] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
+    histogram[0]->SetStats(0);
+    tree1->Project(histogram[0]->GetName(), variable_array[0].c_str(), selection_array[0].c_str());
+    tree2->Project(histogram[1]->GetName(), variable_array[1].c_str(), selection_array[1].c_str());
+
+    if(do_setLogY){
+        canvas->SetLogy();
+    }
+    histogram[0]->SetLineColor(0);
+    histogram[1]->SetLineColor(1);
+
+
+    if(do_integral_norm){
+        histogram[0]->Scale(1.0 / histogram[0]->Integral());
+        histogram[1]->Scale(1.0 / histogram[1]->Integral());
+    }
+
+    histogram[0]->GetXaxis()->SetTitle(x_axis_name.c_str());
+    histogram[0]->GetYaxis()->SetTitle(y_axis_name.c_str());
+    histogram[0]->Draw("same");
+
+
+    histogram[1]->GetXaxis()->SetTitle(x_axis_name.c_str());
+    histogram[1]->GetYaxis()->SetTitle(y_axis_name.c_str());
+    histogram[1]->Draw("same");
+
+    TLegend *legend = new TLegend(0.7, 0.6, 0.85, 0.85); // Position: x1, y1, x2, y2
+    legend->SetEntrySeparation(1);
+    legend->AddEntry(histogram[0], "#sqrt{S_{NN}} = 200 GeV", "");
+    legend->AddEntry(histogram[0], "Pythia8", "");         // "l" means line
+    legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} jets found", "");
+    legend->AddEntry(histogram[0], "1.2*10^{6}jets found", "");
+    legend->AddEntry(histogram[0], variable_names[0].c_str(), "l");
+    legend->AddEntry(histogram[1], variable_names[1].c_str(), "l");
+
+    legend->SetTextSize(0.03);
+    legend->SetFillStyle(0);
+    legend->SetFillColor(0);
+    legend->SetLineColor(0);
+    legend->SetBorderSize(0);
+
+    legend->Draw();
+
+    if(doRootSave){
+        temp = output_file_name + ".root";
+        canvas->SaveAs(temp.c_str());
+    }
+
+    temp = output_file_name + ".pdf";
+    canvas->SaveAs(temp.c_str());
+
+    delete histogram[0];
+    delete histogram[1];
+    delete [] histogram;
+    delete canvas;
+    file1->Close();
+    file2->Close();
+}

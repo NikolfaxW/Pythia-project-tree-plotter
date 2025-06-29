@@ -42,4 +42,10 @@ void DrawHistogramFromTreeSetLeg(std::string path_to_tree, std::string output_fi
 bool CheckLeafForRepetitions(std::string path_to_tree, std::string tree_name,
                              std::string variable_name);
 
+void DrawHistogramFromTreeNoCutsTwoInputs(std::string path_to_tree_first, std::string path_to_tree_second, std::string output_file_name, std::string tree_name1,std::string tree_name2,
+                                          std::string *variable_array, std::string *selection_array, std::string *variable_names,
+                                          int size, bool doRootSave, bool do_setLogY, bool do_integral_norm, bool d0, Double_t left_border,
+                                          Double_t right_border, std::string title, std::string x_axis_name,
+                                          std::string y_axis_name);
+
 #endif //PYTHIA_PROJECT_TREE_PLOTTER_FUNC_H
