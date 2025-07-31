@@ -57,25 +57,46 @@ int main() {
                                               true, "#lambda^{1}_{1}", "Number of entries");
 
         DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{0.5}",
-                                              0, 1, "l105",
+                                              0, 0.8, "l105",
                                               "../results/l105(no cuts)", false, true,
                                               true, "#lambda^{1}_{0.5}", "Number of entries");
         DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{1.5}",
-                                              0, 1, "l115",
+                                              0, 0.6, "l115",
                                               "../results/l115(no cuts)", false, true,
                                               true, "#lambda^{1}_{1.5}", "Number of entries");
         DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{2}",
-                                              0, 1.6, "l12",
+                                              0, 1, "l12",
                                               "../results/l12(no cuts)", false, true,
                                               true, "#lambda^{1}_{2}", "Number of entries");
         DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{1}_{3}",
-                                              0, 6, "l13",
+                                              0, 0.9, "l13",
                                               "../results/l13(no cuts)", false, true,
                                               true, "#lambda^{1}_{3}", "Number of entries");
         DrawHistogramsFromTreeNoCutsTwoInputs("../source/d0.root", "../source/jets.root", "#lambda^{2}_{0}",
-                                              0, 1, "l20",
+                                              0, 0.6, "l20",
                                               "../results/l20(no cuts)", false, true,
                                               true, "#lambda^{2}_{0}", "Number of entries");
+        plotAngularityWithCut("../source/d0.root", "#lambda^#alpha_#kappa", 0, 1, "", "Angs(no cut)");
+        plotAngularityWithCut("../source/d0.root", "#lambda^#alpha_#kappa", 0, 1, "D_0_pT > 1", "Angs(D0>1)");
+        plotAngularityWithCut("../source/d0.root", "#lambda^#alpha_#kappa", 0, 1, "D_0_pT > 1 && jet_pT > 5", "Angs(D0>1ANDjet>5)");
+        plotAngularityWithCut("../source/d0.root", "#lambda^#alpha_#kappa", 0, 1, "D_0_pT > 5 && jet_pT > 5", "Angs(D0>5ANDjet>5)");
+        std::string variable_array[2];
+        variable_array[0] = "D_0_pT";
+        variable_array[1] = "jet_pT";
+        std::string selection_array[2];
+        selection_array[0] = "";
+        selection_array[1] = "";
+        std::string variable_names[2];
+        variable_names[0] = "p_{T,D^{0}}";
+        variable_names[1] = "p_{T,jet}";
+
+        DrawHistogramFromTree("../../Pythia-project-tree-creator/results/d0.root",
+                                  "../results/D0(integral norm)",
+                                  "angT",
+                                  variable_array, selection_array, variable_names, 2, false, true, false, true, 0,
+                                  17,
+                                  "p_{T,D^{0}}, p_{T,jet}, no cut", "p_{T}, GeV",
+                                  "Number of entries");
     }
     else {
         if (doDrawD0 && repetitions) {

@@ -53,5 +53,8 @@ DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string p
                                       std::string output_file_name, bool doRootSave, bool do_setLogY,
                                       bool do_integral_norm, std::string x_axis_name, std::string y_axis_name);
 
+void plotAngularityWithCut(std::string path_to_tree_d0, std::string title, Double_t left_border, Double_t right_border, std::string cut, std::string output_file_name);
+
+
 
 #endif //PYTHIA_PROJECT_TREE_PLOTTER_FUNC_H

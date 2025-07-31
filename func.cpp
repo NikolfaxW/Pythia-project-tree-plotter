@@ -465,7 +465,7 @@ DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string p
     histogram_d0.SetStats(0);
     histogram_jets.SetStats(0);
 
-    tree_d0->Project(histogram_d0.GetName(), variable.c_str(), "");
+    tree_d0->Project(histogram_d0.GetName(), variable.c_str(), "D_0_pT > 5");
     tree_jets->Project(histogram_jets.GetName(), variable.c_str(), "");
 
     if (do_setLogY) {
@@ -495,7 +495,7 @@ DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string p
     legend->AddEntry(&histogram_d0, "Pythia8", "");         // "l" means line
     legend->AddEntry(&histogram_d0, "1.2*10^{6}D^{0} found", "");
     legend->AddEntry(&histogram_d0, "1.2*10^{6}jets found", "");
-    temp = x_axis_name + " D^{0}";
+    temp = x_axis_name + " D^{0} jets";
     legend->AddEntry(&histogram_d0, temp.c_str(), "l");
     temp = x_axis_name + " jets";
     legend->AddEntry(&histogram_jets, temp.c_str(), "l");
@@ -522,3 +522,80 @@ DrawHistogramsFromTreeNoCutsTwoInputs(std::string path_to_tree_d0, std::string p
     delete file_jets;
 }
 
+void plotAngularityWithCut(std::string path_to_tree_d0, std::string title, Double_t left_border, Double_t right_border, std::string cut, std::string output_file_name){
+    TFile *file_d0 = TFile::Open(path_to_tree_d0.c_str());
+    if (!file_d0 || file_d0->IsZombie()) {
+        std::cerr << "Error: Unable to open file " << path_to_tree_d0 << std::endl;
+        return;
+    }
+    TTree *tree_d0 = (TTree *) file_d0->Get("angT");
+    if (!tree_d0) {
+        std::cerr << "Error: Unable to retrieve tree " << "d0 tree" << " from file" << std::endl;
+        file_d0->Close();
+        return;
+    }
+    TCanvas *canvas = new TCanvas("canvas", "Canvas", 800, 600); //width = 800 height 600 pixels
+    canvas->SetTitle("title.c_str()");
+    std::string temp;
+    TH1F ** histogram = new TH1F*[6];
+    for(int i = 0; i < 6; ++i){
+        temp =  "histogram_d0 " + std::to_string(i);
+        histogram[i] = new TH1F(temp.c_str(), title.c_str(), 102, left_border, right_border);
+    }
+    for(int i = 0; i < 6; ++i)
+        histogram[i]->SetStats(0);
+
+
+    tree_d0->Project(histogram[0]->GetName(), "l105", cut.c_str());
+    tree_d0->Project(histogram[1]->GetName(), "l11", cut.c_str());
+    tree_d0->Project(histogram[2]->GetName(), "l115", cut.c_str());
+    tree_d0->Project(histogram[3]->GetName(), "l12", cut.c_str());
+    tree_d0->Project(histogram[4]->GetName(), "l13", cut.c_str());
+    tree_d0->Project(histogram[5]->GetName(), "l20", cut.c_str());
+
+
+    canvas->SetLogy();
+    temp = "Number of entries";
+    for(int i = 0; i < 6; ++i){
+        histogram[i]->SetLineColor(i+1);
+        histogram[i]->Scale(1.0 / histogram[i]->Integral());
+        histogram[i]->GetYaxis()->SetTitle(temp.c_str());
+        histogram[i]->Draw("same");
+    }
+
+    TLegend *legend = new TLegend(0.7, 0.40, 0.85, 0.85); // Position: x1, y1, x2, y2
+    legend->SetEntrySeparation(1);
+    legend->AddEntry(histogram[0], "#sqrt{S_{NN}} = 200 GeV", "");
+    legend->AddEntry(histogram[0], "Pythia8", "");         // "l" means line
+    legend->AddEntry(histogram[0], "1.2*10^{6}D^{0} found", "");
+    legend->AddEntry(histogram[0], "1.2*10^{6}jets found", "");
+    temp =  "#lambda^{1}_{0.5}";
+    legend->AddEntry(histogram[0], temp.c_str(), "l");
+    temp =  "#lambda^{1}_{1}";
+    legend->AddEntry(histogram[1], temp.c_str(), "l");
+    temp =  "#lambda^{1}_{1.5}";
+    legend->AddEntry(histogram[2], temp.c_str(), "l");
+    temp =  "#lambda^{1}_{2}";
+    legend->AddEntry(histogram[3], temp.c_str(), "l");
+    temp =  "#lambda^{1}_{3}";
+    legend->AddEntry(histogram[4], temp.c_str(), "l");
+    temp =  "#lambda^{2}_{0}";
+    legend->AddEntry(histogram[5], temp.c_str(), "l");
+
+    legend->SetTextSize(0.03);
+    legend->SetFillStyle(0);
+    legend->SetFillColor(0);
+    legend->SetLineColor(0);
+    legend->SetBorderSize(0);
+
+    legend->Draw();
+
+    temp = "../results/" + output_file_name + ".pdf";
+    canvas->SaveAs(temp.c_str());
+
+    delete canvas;
+    file_d0->Close();
+    delete file_d0;
+    delete [] histogram;
+
+}
